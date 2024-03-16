@@ -5,8 +5,13 @@ from yt_concate.settings import API_KEY
 
 
 class GetVideoList(Step):
-    def process(self, data, inputs):
+    def process(self, data, inputs, utils):
         channel_id = inputs["channel_id"]
+
+        if utils.video_list_exists(channel_id):
+            print('Found existing video_list for channel_id ', channel_id)
+            return self.read_to_file(utils.get_video_list_filepath(channel_id))
+
         youtube = build(
             'youtube',
             'v3',
@@ -46,5 +51,18 @@ class GetVideoList(Step):
             video_id = video['snippet']['resourceId']['videoId']
             video_url = f"https://www.youtube.com/watch?v={video_id}"
             video_urls.append(video_url)
-        print(video_urls)
+
+        self.write_to_file(video_urls, utils.get_video_list_filepath(channel_id))
         return video_urls
+
+    def write_to_file(self, video_links, filepath):
+        with open(filepath, 'w') as f:
+            for url in video_links:
+                f.write(url + '\n')
+
+    def read_to_file(self, filepath):
+        video_links = []
+        with open(filepath, 'r') as f:
+            for url in f:
+                video_links.append(url.strip())
+        return video_links
