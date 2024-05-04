@@ -7,8 +7,9 @@ from yt_concate.settings import CAPTIONS_DIR
 
 class DownloadCaptions(Step):
     def process(self, data, inputs, utils):
-        for url in data:
-            if utils.caption_file_exists(url):
+        for yt in data:
+            print('downloading caption for ', yt.id)
+            if utils.caption_file_exists(yt):
                 print('found existing caption file')
                 continue
 
@@ -18,8 +19,10 @@ class DownloadCaptions(Step):
                 'subtitlesformat': 'srt',
                 'skip_download': True,
                 'subtitleslangs': ['en'],
-                'outtmpl': f'{CAPTIONS_DIR}/{utils.get_video_id_from_url(url)}.srt'
+                'outtmpl': f'{yt.caption_filepath}.srt'
             }
 
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                ydl.download([url])
+                ydl.download([yt.url])
+
+        return data
