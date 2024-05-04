@@ -10,7 +10,7 @@ class EditVideo(Step):
             start, end = self.parse_caption_time(found.time)
             video = VideoFileClip(found.yt.video_filepath).subclip(start, end)
             clips.append(video)
-            if len(clips) >= inputs['limit']:
+            if len(clips) >= inputs['edit_limit']:
                 break
 
         final_clip = concatenate_videoclips(clips)
@@ -18,7 +18,8 @@ class EditVideo(Step):
         final_clip.write_videofile(output_filepath)
 
     def parse_caption_time(self, caption_time):
-        caption_time, trash = caption_time.split('align')
+        if 'align' in caption_time:
+            caption_time, trash = caption_time.split('align')
         start, end = caption_time.split(' --> ')
         return self.parse_time_str(start), self.parse_time_str(end)
 

@@ -8,6 +8,7 @@ class DownloadVideos(Step):
         yt_set = set([found.yt for found in data])
         print('videos to download=', len(yt_set))
 
+        count_videos = 0
         for yt in yt_set:
             url = yt.url
             if utils.video_file_exists(yt):
@@ -16,11 +17,14 @@ class DownloadVideos(Step):
 
             print('downloading', url)
             ydl_opt = {
-                'writesubtitles': True,
                 'nooverwrites': True,
                 'outtmpl': yt.video_filepath
             }
             with yt_dlp.YoutubeDL(ydl_opt) as ydl:
                 ydl.download([url])
+
+            count_videos += 1
+            if count_videos >= inputs['video_limit']:
+                break
 
         return data
