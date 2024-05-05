@@ -13,6 +13,7 @@ from yt_concate.utils import Utils
 
 CHANNEL_ID = 'UCX6OQ3DkcsbYNE6H8uQQuVA'
 SEARCH_WORD = 'money'
+CAPTION_LIMIT = 30
 VIDEO_LIMIT = 10
 EDIT_LIMIT = 20
 
@@ -21,6 +22,7 @@ def main():
     inputs = {
         'channel_id': CHANNEL_ID,
         'search_word': SEARCH_WORD,
+        'caption_limit': CAPTION_LIMIT,
         'video_limit': VIDEO_LIMIT,
         'edit_limit': EDIT_LIMIT,
     }
