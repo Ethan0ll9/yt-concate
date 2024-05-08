@@ -1,8 +1,6 @@
 import yt_dlp
-import os
 from time import time
 from threading import Thread
-from multiprocessing import Process
 
 from .step import Step
 from yt_concate.settings import CAPTIONS_DIR
@@ -13,7 +11,6 @@ class DownloadCaptions(Step):
         start = time()
         threads = []
 
-        count_captions = 0
         for yt in data:
             print('downloading caption for ', yt.id)
             if utils.caption_file_exists(yt):
@@ -21,10 +18,6 @@ class DownloadCaptions(Step):
                 continue
 
             threads.append(Thread(target=self.download_captions, args=(yt,)))
-
-            count_captions += 1
-            if count_captions >= inputs['caption_limit']:
-                break
 
         for thread in threads:
             thread.start()

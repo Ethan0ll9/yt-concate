@@ -1,8 +1,6 @@
 import yt_dlp
-import os
 from time import time
 from threading import Thread
-from multiprocessing import Process
 
 from .step import Step
 
@@ -15,7 +13,6 @@ class DownloadVideos(Step):
 
         threads = []
 
-        count_videos = 0
         for yt in yt_set:
             url = yt.url
             if utils.video_file_exists(yt):
@@ -25,10 +22,6 @@ class DownloadVideos(Step):
             print('downloading', url)
 
             threads.append(Thread(target=self.download_videos, args=(yt, url)))
-
-            count_videos += 1
-            if count_videos >= inputs['video_limit']:
-                break
 
         for thread in threads:
             thread.start()
