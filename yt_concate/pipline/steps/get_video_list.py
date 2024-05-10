@@ -1,4 +1,5 @@
 from googleapiclient.discovery import build
+import logging
 
 from yt_concate.pipline.steps.step import Step
 from yt_concate.settings import API_KEY
@@ -9,7 +10,8 @@ class GetVideoList(Step):
         channel_id = inputs["channel_id"]
 
         if utils.video_list_exists(channel_id):
-            print('Found existing video_list for channel_id ', channel_id)
+            logger = logging.getLogger(f'logs.{__name__}')
+            logger.info(f'Found existing video_list for channel_id {channel_id}')
             return self.read_to_file(utils.get_video_list_filepath(channel_id))
 
         youtube = build(

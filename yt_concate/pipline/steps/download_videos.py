@@ -1,25 +1,27 @@
 import yt_dlp
 from time import time
 from threading import Thread
+import logging
 
 from .step import Step
 
 
 class DownloadVideos(Step):
     def process(self, data, inputs, utils):
+        logger = logging.getLogger(f'logs.{__name__}')
         start = time()
         yt_set = set([found.yt for found in data])
-        print('videos to download=', len(yt_set))
+        logger.info(f'videos to download= {len(yt_set)}')
 
         threads = []
 
         for yt in yt_set:
             url = yt.url
             if utils.video_file_exists(yt):
-                print(f'found existing video file for {url}, skipping')
+                logger.info(f'found existing video file for {url}, skipping')
                 continue
 
-            print('downloading', url)
+            logger.warning('downloading', url)
 
             threads.append(Thread(target=self.download_videos, args=(yt, url)))
 
@@ -30,7 +32,7 @@ class DownloadVideos(Step):
             thread.join()
 
         end = time()
-        print(f'downloading videos took {end - start} seconds')
+        logger.info(f'downloading videos took {end - start} seconds')
 
         return data
 

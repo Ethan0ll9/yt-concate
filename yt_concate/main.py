@@ -1,6 +1,7 @@
 import sys
 sys.path.append('../')
 import getopt
+import logging
 
 from yt_concate.pipline.steps.get_video_list import GetVideoList
 from yt_concate.pipline.steps.initialize_yt import InitializeYT
@@ -13,6 +14,7 @@ from yt_concate.pipline.steps.preflight import Preflight
 from yt_concate.pipline.steps.postflight import Postflight
 from yt_concate.pipline.pipeline import Pipeline
 from yt_concate.utils import Utils
+from yt_concate.logs import set_logger
 
 
 def print_usage():
@@ -28,10 +30,11 @@ def main():
         'channel_id': 'UCX6OQ3DkcsbYNE6H8uQQuVA',
         'search_word': 'money',
         'edit_limit': 20,
+        'logging_level': logging.WARNING,
     }
 
-    short_opts = 'hc:s:e:'
-    long_opts = 'help channel_id= search_word= edit_limit='.split()
+    short_opts = 'hc:s:e:l:'
+    long_opts = 'help channel_id= search_word= edit_limit= logging_level='.split()
     try:
         opts, args = getopt.getopt(sys.argv[1:], short_opts, long_opts)
     except getopt.GetoptError:
@@ -48,6 +51,10 @@ def main():
             inputs['search_word'] = arg
         elif opt in ('-e', '--edit_limit'):
             inputs['edit_limit'] = arg
+        elif opt in ('-l', '--logging_level'):
+            inputs['logging_level'] = arg
+
+    set_logger(inputs['logging_level'])
 
     steps = [
         Preflight(),
